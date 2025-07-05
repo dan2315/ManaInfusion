@@ -1,0 +1,14 @@
+{
+  "type": "mana_infusion:sky_islands_type",
+  "generator": {
+    "type": "mana_infusion:sky_islands",
+    "biome_source": {
+      "type": "mana_infusion:sky_islands",
+      "biomes": [
+        "minecraft:mushroom_fields",
+        "minecraft:the_void"
+      ]
+    },
+    "noise_settings": "minecraft:overworld"
+  }
+}
