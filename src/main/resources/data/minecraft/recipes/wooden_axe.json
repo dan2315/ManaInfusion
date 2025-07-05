@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RR",
+    "RB",
+    " B"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:red_mushroom"
+    },
+    "B": {
+      "item": "minecraft:brown_mushroom"
+    }
+  },
+  "result": {
+    "item": "minecraft:wooden_axe"
+  }
+} 
