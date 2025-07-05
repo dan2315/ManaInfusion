@@ -81,6 +81,7 @@ public class ManaInfusion
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+//        MinecraftForge.EVENT_BUS.register(mushModify.class);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
@@ -106,6 +107,7 @@ public class ManaInfusion
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         // Some common setup code
+//        mushModify.makeMushoomsEdible();
         LOGGER.info("HELLO FROM COMMON SETUP");
 
         if (Config.logDirtBlock)
