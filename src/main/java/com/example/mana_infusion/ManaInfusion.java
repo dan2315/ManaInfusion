@@ -29,12 +29,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
-// The value here should match an entry in the META-INF/mods.toml file
+
 @Mod(ManaInfusion.MODID)
 public class ManaInfusion
 {
     public static final String MODID = "mana_infusion";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
@@ -43,7 +43,7 @@ public class ManaInfusion
             .icon(() -> ModItems.EXAMPLE_ITEM.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(ModItems.EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-                output.accept(ModItems.CRYSTAL_ITEM.get());
+                output.accept(ModItems.CRYSTAL_BLOCK_ITEM.get());
             }).build());
 
     public ManaInfusion(FMLJavaModLoadingContext context)
@@ -101,7 +101,7 @@ public class ManaInfusion
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS)
-            event.accept(ModItems.EXAMPLE_BLOCK_ITEM);
+            event.accept(ModItems.CRYSTAL_BLOCK_ITEM);
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
