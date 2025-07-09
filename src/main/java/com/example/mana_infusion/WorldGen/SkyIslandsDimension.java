@@ -22,28 +22,28 @@ public class SkyIslandsDimension {
 
     public static final ResourceKey<LevelStem> SKY_ISLANDS_LEVEL_STEM =
             ResourceKey.create(Registries.LEVEL_STEM, ResourceLocation.fromNamespaceAndPath(ManaInfusion.MODID, "sky_islands_dim"));
-    public static final ResourceKey<Level> SKY_ISLANDS_LEVEL =
-            ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(ManaInfusion.MODID, "sky_islands"));
+//    public static final ResourceKey<Level> SKY_ISLANDS_LEVEL =
+//            ResourceKey.create(Registries.DIMENSION, ResourceLocation.fromNamespaceAndPath(ManaInfusion.MODID, "sky_islands"));
     public static final ResourceKey<DimensionType> SKY_ISLANDS_TYPE =
             ResourceKey.create(Registries.DIMENSION_TYPE, ResourceLocation.fromNamespaceAndPath(ManaInfusion.MODID, "sky_islands_type"));
 
     public static void bootstrapType(BootstapContext<DimensionType> context) {
         context.register(SKY_ISLANDS_TYPE, new DimensionType(
-                OptionalLong.of(12000), // fixedTime
-                false, // hasSkylight
+                OptionalLong.empty(), // fixedTime
+                true, // hasSkylight
                 false, // hasCeiling
                 false, // ultraWarm
                 false, // natural
-                1.0, // coordinateScale
+                2.0, // coordinateScale
                 true, // bedWorks
                 false, // respawnAnchorWorks
-                0, // minY
-                256, // height
-                256, // logicalHeight
+                -64, // minY
+                448, // height
+                448, // logicalHeight
                 BlockTags.INFINIBURN_OVERWORLD, // infiniburn
                 BuiltinDimensionTypes.OVERWORLD_EFFECTS, // effectsLocation
                 1.0f, // ambientLight
-                new DimensionType.MonsterSettings(false, false, ConstantInt.of(0), 0)));
+                new DimensionType.MonsterSettings(false, false, ConstantInt.of(7), 15)));
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.mana_infusion;
 
 import com.example.mana_infusion.DataGen.ModWorldGenProvider;
+import com.example.mana_infusion.Utils.Noise.WorleyNoise;
 import com.example.mana_infusion.WorldGen.SkyIslandsBiomeSource;
 import com.example.mana_infusion.WorldGen.SkyIslandsChunkGenerator;
 import com.example.mana_infusion.WorldGen.SkyIslandsDimension;

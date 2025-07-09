@@ -5,7 +5,22 @@
     "biome_source": {
       "type": "mana_infusion:sky_islands",
       "biomes": [
+        "minecraft:plains",
+        "minecraft:forest",
+        "minecraft:birch_forest",
+        "minecraft:dark_forest",
+        "minecraft:desert",
+        "minecraft:savanna",
+        "minecraft:meadow",
+        "minecraft:cherry_grove",
+        "minecraft:taiga",
+        "minecraft:snowy_plains",
+        "minecraft:ice_spikes",
         "minecraft:mushroom_fields",
+        "minecraft:nether_wastes",
+        "minecraft:warped_forest",
+        "minecraft:end_midlands",
+        "minecraft:end_highlands",
         "minecraft:the_void"
       ]
     },

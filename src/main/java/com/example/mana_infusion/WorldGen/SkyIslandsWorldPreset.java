@@ -11,6 +11,7 @@ import net.minecraft.world.level.biome.*;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.presets.WorldPreset;
 
@@ -37,10 +38,14 @@ public class SkyIslandsWorldPreset {
                 context.lookup(Registries.NOISE_SETTINGS).getOrThrow(NoiseGeneratorSettings.OVERWORLD);
 
         SkyIslandsChunkGenerator skyIslandsChunkGenerator = new SkyIslandsChunkGenerator(new SkyIslandsBiomeSource(biomes), overworldSettings);
+        Holder<NoiseGeneratorSettings> holder3 = context.lookup(Registries.NOISE_SETTINGS).getOrThrow(NoiseGeneratorSettings.END);
+
+        var endStem = new LevelStem(holdergetter.getOrThrow(BuiltinDimensionTypes.END), new NoiseBasedChunkGenerator(TheEndBiomeSource.create(biomes), holder3));
 
         LevelStem islandsStem = new LevelStem(dimensionType, skyIslandsChunkGenerator);
         Map<ResourceKey<LevelStem>, LevelStem> dimensions = new HashMap<>();
         dimensions.put(LevelStem.OVERWORLD, islandsStem);
+        dimensions.put(LevelStem.END, endStem);
         return new WorldPreset(dimensions);
     }
 }
