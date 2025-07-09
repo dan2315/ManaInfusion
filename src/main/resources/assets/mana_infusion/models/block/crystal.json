@@ -1,0 +1,9 @@
+{
+  "loader": "forge:obj",
+  "flip_v": true,
+  "model": "mana_infusion:models/block/crystal.obj",
+  "textures": {
+    "texture0": "mana_infusion:block/crystal",
+    "particle": "mana_infusion:block/crystal"
+  }
+}
