@@ -45,13 +45,18 @@ public class WorleyNoise {
         var worleyNoiseValue = f0.getA() / f1.getA();
 
         Vector2i center = f0.getB();
+
+        if (center.x == x && center.y == z) {
+            return new WorleyResult(worleyNoiseValue, f0.getB());
+        }
+
         Vector2f directionVector = new Vector2f(center.x - x, center.y - z).normalize();
         RandomSource randomSource = RandomSource.create(regionKey(f0.getB().x, f0.getB().y));
         PerlinNoise radialNoise = PerlinNoise.create(randomSource, List.of(0));
 
         float noiseValue = ((float) radialNoise.getValue(directionVector.x, worleyNoiseValue, directionVector.y) + 1) / 2;
 
-        return new WorleyResult(worleyNoiseValue + (0.8f * worleyNoiseValue * noiseValue), f0.getB());
+        return new WorleyResult(worleyNoiseValue + (worleyNoiseValue * noiseValue), f0.getB());
     }
 
     private Tuple<Float, Vector2i> DistanceToNthPoint(int x, int z, int n) {

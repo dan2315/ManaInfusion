@@ -49,20 +49,25 @@ public class SkyIslandsBiomeSource extends BiomeSource {
 
         List<Holder<Biome>> islandBiomesList = Arrays.asList(
                 biomeGetter.getOrThrow(Biomes.PLAINS),
-                biomeGetter.getOrThrow(Biomes.FOREST),
-                biomeGetter.getOrThrow(Biomes.BIRCH_FOREST),
-                biomeGetter.getOrThrow(Biomes.DARK_FOREST),
-                biomeGetter.getOrThrow(Biomes.DESERT),
-                biomeGetter.getOrThrow(Biomes.SAVANNA),
+                biomeGetter.getOrThrow(Biomes.MUSHROOM_FIELDS),
                 biomeGetter.getOrThrow(Biomes.MEADOW),
                 biomeGetter.getOrThrow(Biomes.CHERRY_GROVE),
+                biomeGetter.getOrThrow(Biomes.FOREST),
+                biomeGetter.getOrThrow(Biomes.FLOWER_FOREST),
                 biomeGetter.getOrThrow(Biomes.TAIGA),
+                biomeGetter.getOrThrow(Biomes.SNOWY_TAIGA),
+                biomeGetter.getOrThrow(Biomes.BIRCH_FOREST),
+                biomeGetter.getOrThrow(Biomes.DARK_FOREST),
+                biomeGetter.getOrThrow(Biomes.JUNGLE),
+                biomeGetter.getOrThrow(Biomes.BAMBOO_JUNGLE),
+                biomeGetter.getOrThrow(Biomes.SWAMP),
+                biomeGetter.getOrThrow(Biomes.MANGROVE_SWAMP),
+                biomeGetter.getOrThrow(Biomes.DESERT),
+                biomeGetter.getOrThrow(Biomes.MEADOW),
                 biomeGetter.getOrThrow(Biomes.SNOWY_PLAINS),
                 biomeGetter.getOrThrow(Biomes.ICE_SPIKES),
-                biomeGetter.getOrThrow(Biomes.MUSHROOM_FIELDS),
+
                 biomeGetter.getOrThrow(Biomes.NETHER_WASTES),
-                biomeGetter.getOrThrow(Biomes.WARPED_FOREST),
-                biomeGetter.getOrThrow(Biomes.END_MIDLANDS),
                 biomeGetter.getOrThrow(Biomes.END_HIGHLANDS)
         );
 
@@ -81,7 +86,7 @@ public class SkyIslandsBiomeSource extends BiomeSource {
 
     public SkyIslandsBiomeSource(HolderSet<Biome> biomes) {
         this.biomes = biomes;
-        this.islandBiomes = biomes.stream().limit(16).toList();
+        this.islandBiomes = biomes.stream().limit(20).toList();
         this.voidBiome = biomes.stream().findFirst().orElse(null);
         this.worleyNoise = new WorleyNoise(SkyIslandsChunkGenerator.SEED, 3, 1024);
         this.islandBiomeCache = new HashMap<>();

@@ -1,5 +1,7 @@
 package com.example.mana_infusion.WorldGen;
 
+import com.example.mana_infusion.Utils.Noise.EasingFunctions;
+import com.example.mana_infusion.Utils.Noise.Mathd;
 import com.example.mana_infusion.Utils.Noise.WorleyNoise;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -45,6 +47,7 @@ public class SkyIslandsChunkGenerator extends NoiseBasedChunkGenerator {
     private final WorleyNoise worleyNoiseMainLayer;
     private final WorleyNoise worleyNoiseSecondaryLayer;
     private final PerlinNoise terrainNoise;
+
     private final Map<Long, RandomSource> cachedRandomSources = new HashMap<>();
 
     private final BiomeSource biomeSource;
@@ -76,7 +79,7 @@ public class SkyIslandsChunkGenerator extends NoiseBasedChunkGenerator {
 
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor heightAccessor, RandomState randomState) {
-        return calculateHeightForLayer(x, z, worleyNoiseMainLayer, 64, 48, 128, 0.3f, 0.5f);
+        return calculateHeightForLayer(x, z, worleyNoiseMainLayer, 64, 48, 128, 0.6f, 0.8f);
     }
 
     private int calculateHeightForLayer(int x, int z, WorleyNoise worleyNoise, int baseHeight, int upwardTendency, int downwardTendency, float minSize, float maxSize) {
@@ -86,7 +89,7 @@ public class SkyIslandsChunkGenerator extends NoiseBasedChunkGenerator {
         maxSize = 1 - maxSize;
         minSize = 1 - minSize;
 
-        RandomSource random = getOrCreateRandomSource(islandSeed);
+        RandomSource random = RandomSource.create(islandSeed);
         var edgeValue = random.nextFloat() * (maxSize - minSize) + minSize;
 
         float invertedNoise = 1 - worleyResult.noiseValue;
@@ -97,10 +100,8 @@ public class SkyIslandsChunkGenerator extends NoiseBasedChunkGenerator {
         int elevation = Math.round(random.nextFloat() * 64);
         float terrainNoiseValue = ((float) terrainNoise.getValue(x, 0, z) + 1) / 2;
         int up = Math.round(value * terrainNoiseValue * upwardTendency);
-        var result = baseHeight + elevation + up;
-        System.out.println("Height for " + x + " " + z + " == " + result);
 
-        return result;
+        return baseHeight + elevation + up;
     }
 
     private RandomSource getOrCreateRandomSource(long seed) {
@@ -147,16 +148,15 @@ public class SkyIslandsChunkGenerator extends NoiseBasedChunkGenerator {
     }
 
     private void GenerateLandmassForChunk(ChunkAccess chunk) {
-        Heightmap worldSurface = chunk.getOrCreateHeightmapUnprimed(Heightmap.Types.WORLD_SURFACE_WG);
 
         var layers = 2;
         for (int l = 0; l < layers; l++) {
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
                     switch (l) {
-                        case 0: PlaceLandColumn(chunk, x, z, worleyNoiseMainLayer, worldSurface,64, 48, 128, 0.5f,0.7f);
+                        case 0: PlaceLandColumn(chunk, x, z, worleyNoiseMainLayer,64, 48, 128, 0.6f,0.8f, 0);
                             break;
-                        case 1: PlaceLandColumn(chunk, x, z, worleyNoiseSecondaryLayer, worldSurface,256, 8, 32, 0.15f, 0.25f);
+                        case 1: PlaceLandColumn(chunk, x, z, worleyNoiseSecondaryLayer,192, 8, 32, 0.15f, 0.25f, 0.15f);
                             break;
                     }
                 }
@@ -164,32 +164,55 @@ public class SkyIslandsChunkGenerator extends NoiseBasedChunkGenerator {
         }
     }
 
-    private void PlaceLandColumn(ChunkAccess chunk, int x, int z, WorleyNoise worleyNoise, Heightmap surfaceHeightmap, int baseHeight, int upwardTendency, int downwardTendency, float minSize, float maxSize) {
+    private void PlaceLandColumn(ChunkAccess chunk, int x, int z, WorleyNoise worleyNoise, int baseHeight, int upwardTendency, int downwardTendency, float minSize, float maxSize, float detailsOffset) {
         int blockX = chunk.getPos().getBlockX(x);
         int blockZ = chunk.getPos().getBlockZ(z);
         var worleyResult = worleyNoise.GetWorleyData(blockX, blockZ);
+
         long islandSeed = WorleyNoise.regionKey(worleyResult.closestPoint.x, worleyResult.closestPoint.y);
         maxSize = 1 - maxSize;
         minSize = 1 - minSize;
-        var edgeValue = new Random(islandSeed).nextFloat() * (maxSize - minSize) + minSize;
+
+        RandomSource random = RandomSource.create(islandSeed);
+        var edgeValue = random.nextFloat() * (maxSize - minSize) + minSize;
 
         float invertedNoise = 1 - worleyResult.noiseValue;
 
-        float value = Math.max(0, invertedNoise - edgeValue) / (1 - edgeValue);
+        float islandValue = Math.max(0, invertedNoise - edgeValue) / (1 - edgeValue);
+        float rawNoiseValue = (float) terrainNoise.getValue(blockX + 100 * baseHeight, 0, blockZ + 100 * baseHeight);
+        float terrainNoiseValue = (rawNoiseValue + 1) / 2;
 
-        if (value <= 0) return;
+        float detailValue = 1.6f - worleyResult.noiseValue; // Бля, походу я сделал нойз не от 0 до 1 ))
 
-        int elevation = Math.round(RandomSource.create(islandSeed).nextFloat() * 64);
+        // Details Gen
+        if (islandValue <= 0 && detailValue > 0) {
+            float detailHeight = detailValue * rawNoiseValue - detailsOffset;
 
-        float terrainNoiseValue = ((float) terrainNoise.getValue(blockX, 0, blockZ) + 1) / 2;
-        int up = Math.round(value * terrainNoiseValue * upwardTendency);
-        int down = (int) -Math.round(Math.sqrt(1 - Math.pow(value - 1, 2)) * downwardTendency);
+            if (detailHeight > 0) {
+                int up = Math.round(detailHeight * upwardTendency);
+                int down = (int) -Math.round(EasingFunctions.easeInCirc(Mathd.clamp(detailHeight * 5f, 0f, 1f)) * downwardTendency/2);
+                Holder<Biome> biome = biomeSource.getNoiseBiome(blockX >> 2, 96 >> 2, blockZ >> 2, null);
 
-        Holder<Biome> biome = biomeSource.getNoiseBiome(blockX >> 2, 96 >> 2, blockZ >> 2, null);
+                for (int y = down; y <= up; y++) {
+                    BlockState blockState = getBaseBlockForBiome(biome);
+                    chunk.setBlockState(new BlockPos(blockX, y + baseHeight, blockZ), blockState, true);
+                }
+            }
+        }
 
-        for (int y = down; y < up; y++) {
-            BlockState blockState = getBaseBlockForBiome(biome);
-            chunk.setBlockState(new BlockPos(blockX, y + baseHeight + elevation, blockZ), blockState, true);
+        //Island Gen
+        if (islandValue > 0) {
+            int elevation = Math.round(random.nextFloat() * 64);
+
+            int up = Math.round(islandValue * terrainNoiseValue * upwardTendency);
+            int down = (int) -Math.round(EasingFunctions.easeOutCirc(islandValue) * downwardTendency);
+
+            Holder<Biome> biome = biomeSource.getNoiseBiome(blockX >> 2, 96 >> 2, blockZ >> 2, null);
+
+            for (int y = down; y < up; y++) {
+                BlockState blockState = getBaseBlockForBiome(biome);
+                chunk.setBlockState(new BlockPos(blockX, y + baseHeight + elevation, blockZ), blockState, true);
+            }
         }
     }
 
