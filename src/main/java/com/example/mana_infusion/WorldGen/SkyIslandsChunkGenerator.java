@@ -32,6 +32,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2f;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -176,13 +177,21 @@ public class SkyIslandsChunkGenerator extends NoiseBasedChunkGenerator {
         RandomSource random = RandomSource.create(islandSeed);
         var edgeValue = random.nextFloat() * (maxSize - minSize) + minSize;
 
-        float invertedNoise = 1 - worleyResult.noiseValue;
+        PerlinNoise radialNoise = PerlinNoise.create(random, List.of(0));
+        Vector2f directionVector = new Vector2f(worleyResult.closestPoint.x - blockX, worleyResult.closestPoint.y - blockZ).normalize();
+        float radialNoiseValue = ((float) radialNoise.getValue(directionVector.x * 2, edgeValue, directionVector.y * 2) + 1) / 2;
 
-        float islandValue = Math.max(0, invertedNoise - edgeValue) / (1 - edgeValue);
-        float rawNoiseValue = (float) terrainNoise.getValue(blockX + 100 * baseHeight, 0, blockZ + 100 * baseHeight);
+        float invertedNoise = 1 - worleyResult.noiseValue;
+        float mergePoint = Mathd.clamp(worleyResult.noiseValue  * (1/edgeValue), 0f, 1f);
+        float mergedNoise = Mathd.lerp(invertedNoise, radialNoiseValue * invertedNoise, mergePoint);
+        if (blockX == worleyResult.closestPoint.x && blockZ == worleyResult.closestPoint.y) {
+            mergedNoise = invertedNoise;
+        }
+        float islandValue = Math.max(0f, (mergedNoise - edgeValue) * (1 / (1 - edgeValue)));
+        float rawNoiseValue = (float) terrainNoise.getValue(blockX + 100 * baseHeight, 69, blockZ + 100 * baseHeight);
         float terrainNoiseValue = (rawNoiseValue + 1) / 2;
 
-        float detailValue = 1.6f - worleyResult.noiseValue; // Бля, походу я сделал нойз не от 0 до 1 ))
+        float detailValue = 1.0f - worleyResult.noiseValue;
 
         // Details Gen
         if (islandValue <= 0 && detailValue > 0) {
