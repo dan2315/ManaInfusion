@@ -102,7 +102,7 @@ public class WorleyNoise {
         RandomSource random = RandomSource.create(regionSpecificSeed);
 
         int attempts = 0;
-        int maxAttempts = DOTS_PER_REGION * 20; // Avoid infinite loops
+        int maxAttempts = 20;
 
         List<Vector2i> dots = new ArrayList<>();
         while (dots.size() < DOTS_PER_REGION && attempts < maxAttempts) {
@@ -124,7 +124,6 @@ public class WorleyNoise {
             if (!tooClose) {
                 dots.add(new Vector2i(dotX, dotZ));
             }
-
             attempts++;
         }
 

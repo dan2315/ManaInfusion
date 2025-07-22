@@ -72,7 +72,7 @@ public class SkyIslandsBiomeSource extends BiomeSource {
         );
 
         this.seed = SkyIslandsChunkGenerator.SEED;
-        this.worleyNoise = new WorleyNoise(seed, 3, 1024);
+        this.worleyNoise = new WorleyNoise(seed, 3, 1536);
         Holder<Biome> voidBiomeHolder = biomeGetter.getOrThrow(Biomes.THE_VOID);
 
         List<Holder<Biome>> allBiomes = new ArrayList<>(islandBiomesList);
@@ -88,7 +88,7 @@ public class SkyIslandsBiomeSource extends BiomeSource {
         this.biomes = biomes;
         this.islandBiomes = biomes.stream().limit(20).toList();
         this.voidBiome = biomes.stream().findFirst().orElse(null);
-        this.worleyNoise = new WorleyNoise(SkyIslandsChunkGenerator.SEED, 3, 1024);
+        this.worleyNoise = new WorleyNoise(SkyIslandsChunkGenerator.SEED, 3, 1536);
         this.islandBiomeCache = new HashMap<>();
     }
 
