@@ -1,5 +1,6 @@
 package com.example.mana_infusion;
 
+import com.example.mana_infusion.ModBlocks.Crystal.CrystalBlockScreen;
 import com.example.mana_infusion.ModBlocks.ModBlocks;
 import com.example.mana_infusion.ModItems.ModItems;
 
@@ -9,6 +10,7 @@ import com.example.mana_infusion.WorldGen.SkyIslandsBiomeSource;
 import com.example.mana_infusion.WorldGen.SkyIslandsChunkGenerator;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -56,6 +58,8 @@ public class ManaInfusion
 
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
+        ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+        ModMenuTypes.MOD_MENU_TYPES.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
 
         SkyIslandsChunkGenerator.CodecRegistry.register(modEventBus);
@@ -123,6 +127,10 @@ public class ManaInfusion
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+
+            event.enqueueWork(() -> {
+                MenuScreens.register(ModMenuTypes.CRYSTAL_MENU.get(), CrystalBlockScreen::new);
+            });
         }
     }
 }
