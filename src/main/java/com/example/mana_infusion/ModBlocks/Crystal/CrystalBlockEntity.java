@@ -21,6 +21,15 @@ import com.example.mana_infusion.ModBlockEntities; // Adjust import to your mod 
 import javax.annotation.Nullable;
 
 public class CrystalBlockEntity extends BlockEntity implements MenuProvider {
+
+    private boolean obtained = false;
+    private String owner = "";
+
+    public boolean isObtained() { return obtained; }
+    public void setObtained(boolean obtained) { this.obtained = obtained; }
+    public String getOwner() { return owner; }
+    public void setOwner(String owner) { this.owner = owner; }
+
     private final ItemStackHandler itemHandler = new ItemStackHandler(9) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -60,14 +69,18 @@ public class CrystalBlockEntity extends BlockEntity implements MenuProvider {
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
-        tag.put("inventory", itemHandler.serializeNBT());
         super.saveAdditional(tag);
+        tag.put("inventory", itemHandler.serializeNBT());
+        tag.putBoolean("obtained", obtained);
+        tag.putString("owner", owner);
     }
 
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
         itemHandler.deserializeNBT(tag.getCompound("inventory"));
+        obtained = tag.getBoolean("obtained");
+        owner = tag.getString("owner");
     }
 
     public ItemStackHandler getItemHandler() {

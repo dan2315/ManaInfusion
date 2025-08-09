@@ -1,5 +1,6 @@
 {
     "variants": {
-      "": { "model": "mana_infusion:block/crystal" }
+      "model_state=unobtained" : { "model": "mana_infusion:block/crystal_unobtained" },
+      "model_state=obtained" : { "model" : "mana_infusion:block/crystal"}
     }
   }
