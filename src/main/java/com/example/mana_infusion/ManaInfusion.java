@@ -4,7 +4,6 @@ import com.example.mana_infusion.ModBlocks.ModBlocks;
 import com.example.mana_infusion.ModItems.ModItems;
 
 import com.example.mana_infusion.DataGen.ModWorldGenProvider;
-import com.example.mana_infusion.Utils.Noise.WorleyNoise;
 import com.example.mana_infusion.WorldGen.SkyIslandsBiomeSource;
 import com.example.mana_infusion.WorldGen.SkyIslandsChunkGenerator;
 import com.mojang.logging.LogUtils;
@@ -61,7 +60,6 @@ public class ManaInfusion
         SkyIslandsChunkGenerator.CodecRegistry.register(modEventBus);
         SkyIslandsBiomeSource.CodecRegistry.register(modEventBus);
 
-        // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
         // Register the item to a creative tab
