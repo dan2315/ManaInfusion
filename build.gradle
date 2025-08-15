@@ -118,9 +118,9 @@ repositories {
 
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
-    // flatDir {
-    //     dir 'libs'
-    // }
+     flatDir {
+         dir 'libs'
+     }
 }
 
 dependencies {
@@ -131,6 +131,8 @@ dependencies {
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    compileOnly fg.deobf("dod.unrealfrontiers.citify:citify:0.0.1")
+
     compileOnly fg.deobf(files("libs/createoreexcavation-1.20-1.5.3.jar"))
     compileOnly fg.deobf(files("libs/create-1.20.1-0.5.1.j.jar"))
 
