@@ -1,5 +1,7 @@
 package com.example.mana_infusion.ModBlocks.Crystal;
 
+import com.example.mana_infusion.ModBlockEntities;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -16,14 +18,16 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import com.example.mana_infusion.ModBlockEntities; // Adjust import to your mod structure
 
 import javax.annotation.Nullable;
 
 public class CrystalBlockEntity extends BlockEntity implements MenuProvider {
 
+    private int pulseTimer = 0;
+    private final int PULSE_INTERVAL = 100;
+
     private boolean obtained = false;
-    private String owner = "";
+    private String owner = "none";
 
     public boolean isObtained() { return obtained; }
     public void setObtained(boolean obtained) { this.obtained = obtained; }
@@ -43,6 +47,29 @@ public class CrystalBlockEntity extends BlockEntity implements MenuProvider {
     public CrystalBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.CRYSTAL_BLOCK_ENTITY.get(), pos, state);
     }
+
+//    public static void tick(Level level, BlockPos pos, BlockState state, CrystalBlockEntity blockEntity) {
+//        if (level.isClientSide) {
+//            blockEntity.clientTick();
+//        }
+//    }
+//
+//    private void clientTick() {
+//        pulseTimer++;
+//
+//        if (pulseTimer >= PULSE_INTERVAL) {
+//            pulseTimer = 0;
+//
+//            // Create automatic pulse
+//            PulseParticleManager.PulseConfig config = new PulseParticleManager.PulseConfig()
+//                    .maxRadius(6.0f)
+//                    .duration(70)
+//                    .particle(ParticleTypes.PORTAL)
+//                    .particleCount(28);
+//
+//            PulseParticleManager.startPulse(level, worldPosition, config);
+//        }
+//    }
 
     @Override
     public void onLoad() {

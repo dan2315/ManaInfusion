@@ -1,7 +1,10 @@
 package com.example.mana_infusion.ModBlocks.Crystal;
 
+import com.example.mana_infusion.ModBlocks.Crystal.Effects.PulseParticleManager;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -49,6 +52,7 @@ public class CrystalBlock extends BaseEntityBlock {
         if (!level.isClientSide()) {
             if (level.getBlockEntity(pos) instanceof CrystalBlockEntity blockEntity) {
                 if (blockEntity.isObtained()) {
+
                     player.sendSystemMessage(Component.literal("Crystal's owner: " + blockEntity.getOwner()));
                     BlockEntity entity = level.getBlockEntity(pos);
                     if (entity instanceof CrystalBlockEntity) {
@@ -57,15 +61,30 @@ public class CrystalBlock extends BaseEntityBlock {
                         throw new IllegalStateException("Container provider is missing!");
                     }
                 } else {
-                    CrystalModelState currentState = state.getValue(MODEL_STATE);
-                    CrystalModelState newState = currentState == CrystalModelState.MODEL1 ? CrystalModelState.MODEL2 : CrystalModelState.MODEL1;
+                    CrystalModelState newState = state.getValue(MODEL_STATE) == CrystalModelState.MODEL1 ? CrystalModelState.MODEL2 : CrystalModelState.MODEL1;
 
                     level.setBlock(pos, state.setValue(MODEL_STATE, newState), 3);
                     blockEntity.setObtained(true);
                     blockEntity.setOwner(player.getName().getString());
                 }
             }
+        } else { // TODO: HARDCODED CLIENT-SERVER VARIABLE SYNC. AWAITING FOR CITIFY API COMPLETION
+            if (level.getBlockEntity(pos) instanceof CrystalBlockEntity blockEntity) {
+                if (!blockEntity.isObtained()) {
+                    blockEntity.setObtained(true);
+                    blockEntity.setOwner(player.getName().getString());
+                    player.sendSystemMessage(Component.literal("I wasn't obtained before : " + blockEntity.getOwner()));
+                    PulseParticleManager.PulseConfig config = new PulseParticleManager.PulseConfig()
+                            .maxRadius(7.0f)
+                            .duration(10)
+                            .particle(ParticleTypes.CAMPFIRE_COSY_SMOKE)
+                            .particleCount(100);
+
+                    PulseParticleManager.startPulse(level, pos, config);
+                }
+            }
         }
+
         return InteractionResult.sidedSuccess(level.isClientSide());
     }
 

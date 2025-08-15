@@ -1,6 +1,7 @@
 package com.example.mana_infusion;
 
 import com.example.mana_infusion.ModBlocks.Crystal.CrystalBlockScreen;
+import com.example.mana_infusion.ModBlocks.Crystal.Effects.PulseParticleManager;
 import com.example.mana_infusion.ModBlocks.ModBlocks;
 import com.example.mana_infusion.ModItems.ModItems;
 
@@ -18,6 +19,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -117,8 +119,8 @@ public class ManaInfusion
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents
-    {
+    public static class ClientModEvents {
+
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
@@ -129,6 +131,17 @@ public class ManaInfusion
             event.enqueueWork(() -> {
                 MenuScreens.register(ModMenuTypes.CRYSTAL_MENU.get(), CrystalBlockScreen::new);
             });
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+    public static class ClientForgeEvents {
+
+        @SubscribeEvent
+        public static void onClientTick(TickEvent.ClientTickEvent event) {
+            if (event.phase == TickEvent.Phase.END) {
+                PulseParticleManager.tickAllPulses();
+            }
         }
     }
 }
