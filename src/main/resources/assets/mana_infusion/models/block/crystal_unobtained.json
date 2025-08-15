@@ -1,0 +1,9 @@
+{
+  "loader": "forge:obj",
+  "flip_v": true,
+  "model": "mana_infusion:models/block/crystal_unobtained.obj",
+  "textures": {
+    "texture0": "mana_infusion:block/crystal_unobtained",
+    "particle": "mana_infusion:block/crystal_unobtained"
+  }
+}
